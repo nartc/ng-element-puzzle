@@ -149,24 +149,26 @@ export class PuzzleComponent implements OnInit, AfterViewInit {
 
   private makeInsertIndex(arr: string[], puzzleSize: number): { word: string, index: number }[] {
     let min = 0;
-    let max = Math.ceil(puzzleSize / arr.length);
-    return arr.map(word => {
+    let max = Math.ceil(puzzleSize - arr.length);
+    const cloneArr = [...arr];
+    return arr.map((word: string, i: number) => {
       if (word.length > puzzleSize) {
         return null;
       }
 
-      const newWord = {
-        word,
-        index: this.getRandomNumber(min, max),
-      };
+      const newWord = { word, index: 0 };
+      let index = this.getRandomNumber(min, max);
+      while ((puzzleSize - (index + 1) < cloneArr.slice(i + 1).length)) {
+        index--;
+      }
+      newWord.index = index;
 
       const temp = max;
-
-      min += this.getRandomNumber(1, 2);
+      min += this.getRandomNumber(1, Math.ceil(puzzleSize - arr.length));
       while (min <= temp) {
         min++;
       }
-      max += this.getRandomNumber(1, 2);
+      max += this.getRandomNumber(1, Math.ceil(puzzleSize - arr.length));
       while (max > puzzleSize - 1) {
         max--;
       }
